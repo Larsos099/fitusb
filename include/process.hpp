@@ -5,6 +5,7 @@ class Process {
 public:
     s output{};
     int returnCode;
-    Process(s &output, int &returnCode);
+    Process();
     void Exec(os operatingSystemType, verbose v, s cmd);
+    
 };

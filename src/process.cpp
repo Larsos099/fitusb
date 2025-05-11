@@ -1,6 +1,6 @@
 #include "process.hpp"
 
-Process::Process(s &output, int &returnCode) {};
+Process::Process() {};
 
 void Process::Exec(os operatingSystemType, verbose v, s cmd) {
     if(operatingSystemType == UNIX && v == YES){
@@ -11,16 +11,16 @@ void Process::Exec(os operatingSystemType, verbose v, s cmd) {
         }
         std::ostringstream cmdOut;
         char c;
-        while((c = fgetc(pipe))){
+        while((c = fgetc(pipe)) != EOF){
             std::cout << "Reading command output..." << std::endl;
             if(feof(pipe)) break;
             cmdOut << c;
-        }
+        }  
         std::cout << "Finished reading command output" << std::endl;
-        if(!(pclose(pipe))){
+        if((pclose(pipe))){
             throw std::runtime_error("Couldn't close Pipe!\n");
         }
-        output = cmdOut.str();
+        output =cmdOut.str();
         return;
     }
 }

@@ -42,9 +42,7 @@ int main(int argc, char* argv[]){
             case 3: {std::cout << "UNSUPPORTED" << std::endl;} break;
         };
     }
-    s out{};
-    int r{};
-    Process proc(out, r);
+    Process proc{};
     os osys = getOS();
     if(listdev){
         v = YES;
@@ -54,8 +52,14 @@ int main(int argc, char* argv[]){
         fl = true;
     }
     if((v) && fl){
-        proc.Exec(osys, v, "tree"); // Flash ISO to USB with verbose argl[2] is always the ISO and argl[3] always the USB
-        std::cout << out << std::endl;
+        std::ostringstream ss;
+        std::string iso = fs::absolute(argl[1]);
+        if(!(fs::exists(argl[2]))) {
+            throw fs::filesystem_error("USB-Device not found.", argl[2], std::make_error_code(std::errc::no_such_file_or_directory));
+        }
+        ss << "sudo " << FLASH_TOOL << " if=" << iso << " of=" << argl[2] << " bs=1m && sync"; // sudo dd if=Ventoy of=/dev/USBSTICK bs=1M && sync
+        s flash = ss.str();
+        proc.Exec(osys, v, flash);
     }
     if(!(v) && !listdev && !getos && !getHelp){
         s isofile = argl[2];

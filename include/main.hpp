@@ -15,10 +15,11 @@
     #include<cstdio>
     #include<unistd.h> 
     #define LISTDEV "lsblk"
+    #define FLASH_TOOL "dd"
 #elif defined(__APPLE__)
     #include <unistd.h>
     #include <cstdlib>
-    #include <cstdio>
+    #include <cstdio>   
     #define LISTDEV "lsblk"
 #else
     #error "unsupported os."
