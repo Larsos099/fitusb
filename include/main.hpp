@@ -10,7 +10,8 @@
 #ifdef _WIN32
     #include<Windows.h>
     #include<process.h>
-    #define LISTDEV "diskpart ///"
+    #define LISTDEV "diskpart /s \"list disk\""
+    #define FLASH_TOOL 
 #elif defined(__linux__)
     #include<cstdio>
     #include<unistd.h> 
@@ -21,6 +22,7 @@
     #include <cstdlib>
     #include <cstdio>   
     #define LISTDEV "lsblk"
+    #define FLASH_TOOL "dd"
 #else
     #error "unsupported os."
 #endif

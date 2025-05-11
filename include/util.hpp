@@ -9,3 +9,6 @@ bool findInVec(const v<s>  &vec, const s &val){
 
     return std::find(vec.begin(), vec.end(), val) != vec.end();
 }
+bool findInStr(const s &stfi, const s &val){
+    return stfi.find(val) != std::string::npos;
+}
