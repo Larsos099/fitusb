@@ -4,7 +4,6 @@
 int main(int argc, char* argv[]){
     bool getHelp = false;
     v<s> argl{};
-    bool vb = false;
     bool getos = false;
     bool listdev = false;
     bool fl = false;
@@ -24,7 +23,6 @@ int main(int argc, char* argv[]){
         throw std::runtime_error("This program must be run as root. (sudo)\n");
     }
     if(findInVec(argl, "-v")){
-        vb = true;
         v = YES;
     }
     if(findInVec(argl, "-gos")){
@@ -52,7 +50,6 @@ int main(int argc, char* argv[]){
     Process proc{};
     os osys = getOS();
     if(listdev){
-        v = YES;
         proc.Exec(osys, v, LISTDEV);
     }
     if(fl){
