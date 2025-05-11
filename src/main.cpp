@@ -50,7 +50,7 @@ int main(int argc, char* argv[]){
         v = YES;
         proc.Exec(osys, v, LISTDEV);
     }
-    if(argc > 2 && fs::exists(argl[2])){
+    if(argc > 2 && fs::exists(argl[1])){
         fl = true;
     }
     if((v) && fl){

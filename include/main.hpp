@@ -18,6 +18,7 @@
 #elif defined(__APPLE__)
     #include <unistd.h>
     #include <cstdlib>
+    #include <cstdio>
     #define LISTDEV "lsblk"
 #else
     #error "unsupported os."
