@@ -8,6 +8,7 @@ int main(int argc, char* argv[]){
     bool getos = false;
     bool listdev = false;
     bool fl = false;
+    s iso = "0"; s device = "0";
     verbose v{};
     for(int i = 0; i < argc; i++){
         argl.push_back(std::string(argv[i])); // because C-Strings are disgusting
@@ -32,7 +33,13 @@ int main(int argc, char* argv[]){
     if(findInVec(argl, "-ld")){
         listdev = true;
     }
-    
+    for(int i = 1; i < argc; i++){
+        if(fs::exists(argl[i]) && !findInStr(argl[i], "/dev/")) iso = fs::absolute(argl[i]);
+        if(fs::exists(argl[i]) && findInStr(argl[i], "/dev/")) device = fs::absolute(argl[i]);
+
+    }
+    if(iso == "0" || device == "0") throw std::invalid_argument("Please specify Device and ISO-File");
+    else if(iso != "0" && device != "0") fl = true;
     if(getos){
         os ro = getOS();
         switch(ro){
@@ -48,23 +55,12 @@ int main(int argc, char* argv[]){
         v = YES;
         proc.Exec(osys, v, LISTDEV);
     }
-    if(argc > 2 && fs::exists(argl[1])){
-        fl = true;
-    }
-    if((v) && fl){
+    if(fl){
+        if(!fs::exists(iso) || !fs::exists(device)) throw std::errc::no_such_file_or_directory;
         std::ostringstream ss;
-        std::string iso = fs::absolute(argl[1]);
-        if(!(fs::exists(argl[2]))) {
-            throw fs::filesystem_error("USB-Device not found.", argl[2], std::make_error_code(std::errc::no_such_file_or_directory));
-        }
-        ss << "sudo " << FLASH_TOOL << " if=" << iso << " of=" << argl[2] << " bs=1m && sync"; // sudo dd if=Ventoy of=/dev/USBSTICK bs=1M && sync
+        ss << FLASH_TOOL << " if=" << iso << " of=" << device << " bs=1M && sync";
         s flash = ss.str();
-        proc.Exec(osys, v, flash);
-    }
-    if(!(v) && !listdev && !getos && !getHelp){
-        s isofile = argl[2];
-        s absoluteIsofile = fs::absolute(isofile);
-        s devicePath = argl[3];
+        proc.Exec(osys, v, FLASH_TOOL);
     }
     if(getHelp){
         std::cout << "usage:\n"
