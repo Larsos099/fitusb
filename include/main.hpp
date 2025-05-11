@@ -1,16 +1,25 @@
-#ifndef MAIN_HPP
-#define MAIN_HPP
-#include <iostream>
-#include <string>
-#include <vector>
-#include <filesystem>
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/wait.h>
-#include <stdlib.h>
-#include <stdexcept>
+#pragma once
+#include<string>
+#include<vector>
+#include<iostream>
+#include<filesystem>
+#include<stdexcept>
+#include<sstream>
+#include<algorithm>
+#include "verbose.hpp"
+#ifdef _WIN32
+    #include<Windows.h>
+    #include<process.h>
+#elif defined(__linux__)
+    #include<cstdio>
+#elif defined(__APPLE__)
+    #include <unistd.h>
+    #include <cstdlib>
+#else
+    #error "unsupported os."
+#endif
 using s = std::string;
-namespace fs = std::filesystem;
-template<typename T>
+template <typename T>
 using v = std::vector<T>;
-#endif // MAIN_HPP
+namespace fs = std::filesystem;
+

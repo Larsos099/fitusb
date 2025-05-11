@@ -1,14 +1,10 @@
-#ifndef PROC_HPP
-#define PROC_HPP
+#pragma once
 #include "main.hpp"
+#include "ostype.hpp"
 class Process {
-    public:
-    Process(int &retCode, s &out);
-    void executeCommandUnix(s cmd);
-    s getOutPut();
-    private:
-    int retCode;
-    s out;
+public:
+    s output{};
+    int returnCode;
+    Process(s &output, int &returnCode);
+    void Exec(os operatingSystemType, verbose v, s cmd);
 };
-
-#endif // PROC_HPP

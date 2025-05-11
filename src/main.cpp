@@ -1,29 +1,26 @@
 #include "main.hpp"
 #include "process.hpp"
-#include "os.hpp"
-#include "verbose.hpp"
+#include "util.hpp"
 int main(int argc, char* argv[]){
-    s isoFile = {};
-    v<s> argl = {};
-    if(argc == 1){
-        return 1;
-    }
+    v<s> argl{};
+    bool vb = false;
+    bool getos = false;
+    bool listdev = false;
+    verbose v{};
     for(int i = 0; i < argc; i++){
-        argl.push_back(std::string(argv[i])); 
+        argl.push_back(std::string(argv[i])); // because C-Strings are disgusting
     }
-    OperatingSystem os{};
-    s output{};
-    int returnCode{};
-    Process agent(returnCode, output);
-    osType runningOn{};
-    if(os.set()){
-        runningOn = os.getOS();
+    if(findInVec(argl, s("-v"))){
+        vb = true;
+        v = YES;
     }
-    else {
-        return 2;
+    s out{};
+    int r{};
+    Process proc(out, r);
+    os osys = getOS();
+    if((v)){
+        proc.Exec(osys, v, "tree");
+        std::cout << out << std::endl;
     }
-    if(runningOn == UNIX){
-        runVerbose(runningOn, agent, "d<");
-        return 0;
-    }
+    return 0;
 }
