@@ -23,6 +23,7 @@ fitusb -gos
 ## 5.1 Requirements
 - Some C++ Compiler with C++17 support
 - CMake 3.16
+- _**(UNIX SYSTEMS ONLY) lsblk**_
 ## 5.2 How to build _fitusb_
 you go into the fitusb directory, where you cloned it into.
 
