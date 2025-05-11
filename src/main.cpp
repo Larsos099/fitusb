@@ -6,6 +6,7 @@ int main(int argc, char* argv[]){
     bool vb = false;
     bool getos = false;
     bool listdev = false;
+    bool fl = false;
     verbose v{};
     for(int i = 0; i < argc; i++){
         argl.push_back(std::string(argv[i])); // because C-Strings are disgusting
@@ -35,11 +36,19 @@ int main(int argc, char* argv[]){
     os osys = getOS();
     if(listdev){
         v = YES;
-        proc.Exec(osys, v, "lsblk");
+        proc.Exec(osys, v, LISTDEV);
     }
-    if((v)){
-        proc.Exec(osys, v, "tree");
+    if(fs::exists(argl[2])){
+        fl = true;
+    }
+    if((v) && fl){
+        proc.Exec(osys, v, "tree"); // Flash ISO to USB with verbose argl[2] is always the ISO and argl[3] always the USB
         std::cout << out << std::endl;
+    }
+    if(!(v) && !listdev && !getos){
+        s isofile = argl[2];
+        s absoluteIsofile = fs::absolute(isofile);
+        s devicePath = argl[3];
     }
     return 0;
 }

@@ -9,7 +9,7 @@ you just build it from source (using CMake) or download it from Sources like the
 ## 4. How do I use _fitusb_?
 you use fitusb in the terminal of your choice like this:
 ```sh
-fitusb <ISO-Image-path> <device>
+fitusb <ISO-Image-path> <device> (-v)
 ```
 to list the devices, you use the following argument:
 ```sh
