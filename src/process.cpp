@@ -13,7 +13,7 @@ void Process::Exec(os operatingSystemType, verbose v, s cmd) {
         char c;
         while((c = fgetc(pipe)) != EOF){
             std::cout << "Reading command output..." << std::endl;
-            // if(feof(pipe)) break;
+            if(feof(pipe)) break;
             cmdOut << c;
         }  
         std::cout << "Finished reading command output" << std::endl;

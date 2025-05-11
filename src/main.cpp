@@ -57,7 +57,7 @@ int main(int argc, char* argv[]){
         std::ostringstream ss;
         ss << FLASH_TOOL << " if=" << iso << " of=" << device << " bs=1M && sync";
         s flash = ss.str();
-        proc.Exec(osys, v, FLASH_TOOL);
+        proc.Exec(osys, v, flash);
     }
     if(getHelp){
         std::cout << "usage:\n"
