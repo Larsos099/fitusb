@@ -1,0 +1,7 @@
+{
+	"InstallScripts" : 
+	[
+		"/home/larsl/cpp/fitusb/build/cmake_install.cmake"
+	],
+	"Parallel" : false
+}

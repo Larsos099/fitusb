@@ -1,0 +1,3 @@
+/home/larsl/cpp/fitusb/build/CMakeFiles/fitusb.dir
+/home/larsl/cpp/fitusb/build/CMakeFiles/edit_cache.dir
+/home/larsl/cpp/fitusb/build/CMakeFiles/rebuild_cache.dir
