@@ -13,6 +13,7 @@
     #define LISTDEV "diskpart ///"
 #elif defined(__linux__)
     #include<cstdio>
+    #include<unistd.h> 
     #define LISTDEV "lsblk"
 #elif defined(__APPLE__)
     #include <unistd.h>
