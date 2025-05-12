@@ -1,7 +1,9 @@
 #include "main.hpp"
 #include "process.hpp"
 #include "util.hpp"
+#if defined(_WIN32)
 #include "wintool.hpp"
+#endif
 int main(int argc, char* argv[]){
     bool getHelp = false;
     v<s> argl{};
