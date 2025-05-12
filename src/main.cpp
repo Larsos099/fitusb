@@ -1,16 +1,17 @@
 #include "main.hpp"
 #include "process.hpp"
 #include "util.hpp"
+#include "help.hpp"
 #if defined(_WIN32)
 #include "wintool.hpp"
 #endif
+
 int main(int argc, char* argv[]){
-    bool getHelp = false;
     v<s> argl{};
     bool getos = false;
     bool listdev = false;
     bool fl = false;
-
+    
     s iso = "0"; s device = "0";
     s out{};
     verbose v{};
@@ -22,7 +23,8 @@ int main(int argc, char* argv[]){
 
     }
     if(findInVec(argl, "-h")){
-        getHelp = true;
+        os z = getOS();
+        helpPrompt(z);
     }
     #if defined(__unix__) || defined(__APPLE__)
     if(geteuid() != 0 && !getHelp){
@@ -40,22 +42,6 @@ int main(int argc, char* argv[]){
     if(findInVec(argl, "-ld")){
         listdev = true;
     }
-    for(int i = 1; i < argc; i++){
-        #if defined(__unix__) || defined(__APPLE__)
-        if(fs::exists(argl[i]) && !findInStr(argl[i], "/dev/")) iso = fs::absolute(argl[i]);
-        if(fs::exists(argl[i]) && findInStr(argl[i], "/dev/")) device = fs::absolute(argl[i]);
-        #elif defined(_WIN32)
-        if(fs::exists(argl[i])) { iso = fs::absolute(argl[i]).string(); }
-        try {
-            if((std::stoi(argl[i]) == 0)) device = argl[i];
-        }
-        catch (const std::invalid_argument &ex){
-            std::cout << "Drive Argument Recognition failed. likely std::stoi. " <<  "argl[" << std::to_string(i) << "]" <<std::endl << ex.what() << std::endl;
-        }
-        #endif
-    }
-    if(iso == "0" || device == "0") throw std::invalid_argument("Please specify Device and ISO-File");
-    else if(iso != "0" && device != "0") fl = true;
     if(getos){
         os ro = getOS();
         switch(ro){
@@ -65,8 +51,6 @@ int main(int argc, char* argv[]){
             case 3: {std::cout << "UNSUPPORTED" << std::endl;} break;
         };
     }
-    Process proc{};
-    os osys = getOS();
     #if defined(__unix__ )|| (__APPLE__)
     if(listdev){
         proc.Exec(osys, v, LISTDEV);
@@ -76,8 +60,25 @@ int main(int argc, char* argv[]){
         WinTool wt{};
         wt.listDevices(out);
         std::cout << out << std::endl;
+        exit(0);
     }
     #endif
+    Process proc{};
+    for(int i = 1; i < argc; i++){
+        #if defined(__unix__) || defined(__APPLE__)
+        if(fs::exists(argl[i]) && !findInStr(argl[i], "/dev/")) iso = fs::absolute(argl[i]);
+        if(fs::exists(argl[i]) && findInStr(argl[i], "/dev/")) device = fs::absolute(argl[i]);
+        #elif defined(_WIN32)
+        if(fs::exists(argl[i])) { iso = fs::absolute(argl[i]).string(); }
+        if((std::stoi(argl[i]) == 0)) device = argl[i];
+        
+        
+        #endif
+    }
+    if(iso == "0" || device == "0") throw std::invalid_argument("Please specify Device and ISO-File");
+    else if(iso != "0" && device != "0") fl = true;
+    os osys = getOS();
+    
 
     #if defined(__unix__) || defined(__APPLE__)
     if(fl){
@@ -101,22 +102,5 @@ int main(int argc, char* argv[]){
         return 0;
     }
     #endif
-    if(getHelp){
-        if(osys == UNIX){
-            std::cout << "usage:\n"
-                      << "1. sudo fitusb [-h -v -gos -ld]\n"
-                      << "2. sudo fitusb <Path-to-Iso> <device> (-v)\n"
-                      << "[!] The order of the Arguments does not matter.\n"
-                      << "[!] fitusb MUST be run as root (sudo fitusb).\n";
-        }
-        else if(osys == MSWIN) {
-            std::cout << "usage:\n"
-                      << "1. fitusb [-h -v -gos -ld]\n"
-                      << "2. fitusb <Path-to-ISO> <Windows-Drive-Number>\n"
-                      << "[*] Example for Drive Number:\n"
-                      << "fitusb C:\\Users\\Albert\\Downloads\\Windows7Ultimate.iso 5\n"
-                      << "[!] fitusb MUST be run as Administrator.\n";
-        }
-    }
     return 0;
 }

@@ -3,7 +3,7 @@
 
 WinTool::WinTool(){};
 
-void flash(const s isofile, const int devnum, verbose v) {
+void WinTool::flash(const s isofile, const int devnum, verbose v) {
     if((v)) {
     HANDLE isoHandle;
     try {
@@ -83,32 +83,50 @@ void flash(const s isofile, const int devnum, verbose v) {
 }
 
 void WinTool::listDevices(s &out){
+    std::ostringstream outstrs;
     char szPhysicalDrive[32];
     int foundDrives = 0;
-    std::ostringstream outstrs;
+    
     outstrs << "Listing removable physical drives:\n";
     outstrs << "--------------------------------\n";
 
     for (int i = 0; ; i++) {
         sprintf_s(szPhysicalDrive, "\\\\.\\PhysicalDrive%d", i);
         
+        // Try with read-only access first
         HANDLE hDevice = CreateFileA(
             szPhysicalDrive,
-            0,  
+            FILE_READ_ATTRIBUTES,
             FILE_SHARE_READ | FILE_SHARE_WRITE,
             NULL,
             OPEN_EXISTING,
             0,
             NULL);
-        
+
         if (hDevice == INVALID_HANDLE_VALUE) {
-            if (GetLastError() == ERROR_FILE_NOT_FOUND) {
-                break;
+            DWORD err = GetLastError();
+            if (err == ERROR_FILE_NOT_FOUND) {
+                break;  // No more drives
             }
-            continue;
+            
+            // Try again with admin-level access if the first attempt failed
+            hDevice = CreateFileA(
+                szPhysicalDrive,
+                GENERIC_READ,
+                FILE_SHARE_READ | FILE_SHARE_WRITE,
+                NULL,
+                OPEN_EXISTING,
+                0,
+                NULL);
+
+            if (hDevice == INVALID_HANDLE_VALUE) {
+                outstrs << "Could not access \\\\.\\PhysicalDrive" << i 
+                       << " (Error: " << GetLastError() << ")\n";
+                continue;
+            }
         }
 
-        // Check if this is a removable drive
+        // Get basic device properties
         STORAGE_PROPERTY_QUERY query;
         memset(&query, 0, sizeof(query));
         query.PropertyId = StorageDeviceProperty;
@@ -128,27 +146,69 @@ void WinTool::listDevices(s &out){
             if (devd.RemovableMedia) {
                 foundDrives++;
                 outstrs << "Drive #" << foundDrives << ": \\\\.\\PhysicalDrive" << i << "\n";
+
+                // Get more detailed information
+                STORAGE_HOTPLUG_INFO hotplugInfo;
+                if (DeviceIoControl(
+                    hDevice,
+                    IOCTL_STORAGE_GET_HOTPLUG_INFO,
+                    NULL, 0,
+                    &hotplugInfo, sizeof(hotplugInfo),
+                    &bytesReturned,
+                    NULL)) {
+                    outstrs << "  Removable: " << (hotplugInfo.MediaRemovable ? "Yes" : "No") << "\n";
+                    outstrs << "  Hotpluggable: " << (hotplugInfo.MediaHotplug ? "Yes" : "No") << "\n";
+                }
+
+                // Try different methods to get size
+                bool gotSize = false;
                 
-                // Get disk size
+                // Method 1: Standard size query
                 GET_LENGTH_INFORMATION lengthInfo;
-                DWORD bytesReturnedSize = 0;
-                
                 if (DeviceIoControl(
                     hDevice,
                     IOCTL_DISK_GET_LENGTH_INFO,
                     NULL, 0,
                     &lengthInfo, sizeof(lengthInfo),
-                    &bytesReturnedSize,
+                    &bytesReturned,
                     NULL)) {
-                    
                     ULONGLONG diskSize = lengthInfo.Length.QuadPart;
                     outstrs << "  Size: " << std::fixed << std::setprecision(2) 
                            << (double)diskSize / (1024 * 1024 * 1024)
-                           << " GB (exact: " << diskSize << " bytes)\n\n";
-                } else {
-                    outstrs << "  Size: Unknown (error " << GetLastError() << ")\n\n";
+                           << " GB (" << diskSize << " bytes)\n";
+                    gotSize = true;
                 }
+
+                // Method 2: Alternative size query if first failed
+                if (!gotSize) {
+                    DISK_GEOMETRY_EX diskGeometry;
+                    if (DeviceIoControl(
+                        hDevice,
+                        IOCTL_DISK_GET_DRIVE_GEOMETRY_EX,
+                        NULL, 0,
+                        &diskGeometry, sizeof(diskGeometry),
+                        &bytesReturned,
+                        NULL)) {
+                        ULONGLONG diskSize = diskGeometry.DiskSize.QuadPart;
+                        outstrs << "  Size: " << std::fixed << std::setprecision(2) 
+                               << (double)diskSize / (1024 * 1024 * 1024)
+                               << " GB (" << diskSize << " bytes)\n";
+                        gotSize = true;
+                    }
+                }
+
+                if (!gotSize) {
+                    outstrs << "  Size: Could not determine size (Error: " << GetLastError() << ")\n";
+                    if (GetLastError() == ERROR_ACCESS_DENIED) {
+                        outstrs << "       Administrator privileges required for this operation\n";
+                    }
+                }
+
+                outstrs << "\n";
             }
+        } else {
+            outstrs << "Could not query properties for \\\\.\\PhysicalDrive" << i 
+                   << " (Error: " << GetLastError() << ")\n";
         }
         
         CloseHandle(hDevice);
@@ -160,6 +220,5 @@ void WinTool::listDevices(s &out){
         outstrs << "Total removable drives found: " << foundDrives << "\n";
     }
     out = outstrs.str();
-    return;
 }
 #endif
