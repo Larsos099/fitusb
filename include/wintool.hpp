@@ -1,11 +1,11 @@
 #if defined(_WIN32)
 #pragma once
 #include "main.hpp"
+#pragma comment(lib, "setupapi.lib")
 
 class WinTool {
 public:
     WinTool();
-    void getOutput(s &out);
     void flash(const s isofile, const int devnum, verbose v);
     void listDevices(s &out);
 private:

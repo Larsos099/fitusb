@@ -1,12 +1,8 @@
 #if defined(_WIN32)
 #include "wintool.hpp"
-#pragma comment(lib, "setupapi.lib")
+
 WinTool::WinTool(){};
 
-void WinTool::getOutput(s &out){
-    out = output;
-    return;
-}
 void flash(const s isofile, const int devnum, verbose v) {
     if((v)) {
     HANDLE isoHandle;
@@ -88,7 +84,11 @@ void flash(const s isofile, const int devnum, verbose v) {
 
 void WinTool::listDevices(s &out){
     char szPhysicalDrive[32];
-    
+    int foundDrives = 0;
+    std::ostringstream outstrs;
+    outstrs << "Listing removable physical drives:\n";
+    outstrs << "--------------------------------\n";
+
     for (int i = 0; ; i++) {
         sprintf_s(szPhysicalDrive, "\\\\.\\PhysicalDrive%d", i);
         
@@ -103,7 +103,6 @@ void WinTool::listDevices(s &out){
         
         if (hDevice == INVALID_HANDLE_VALUE) {
             if (GetLastError() == ERROR_FILE_NOT_FOUND) {
-                // No more physical drives
                 break;
             }
             continue;
@@ -127,7 +126,8 @@ void WinTool::listDevices(s &out){
             NULL)) {
             
             if (devd.RemovableMedia) {
-                printf("\\\\.\\PhysicalDrive%d - ", i);
+                foundDrives++;
+                outstrs << "Drive #" << foundDrives << ": \\\\.\\PhysicalDrive" << i << "\n";
                 
                 // Get disk size
                 GET_LENGTH_INFORMATION lengthInfo;
@@ -142,75 +142,24 @@ void WinTool::listDevices(s &out){
                     NULL)) {
                     
                     ULONGLONG diskSize = lengthInfo.Length.QuadPart;
-                    printf("Size: %.2f GB\n", (double)diskSize / (1024 * 1024 * 1024));
+                    outstrs << "  Size: " << std::fixed << std::setprecision(2) 
+                           << (double)diskSize / (1024 * 1024 * 1024)
+                           << " GB (exact: " << diskSize << " bytes)\n\n";
                 } else {
-                    printf("Size: Unknown (error %lu)\n", GetLastError());
+                    outstrs << "  Size: Unknown (error " << GetLastError() << ")\n\n";
                 }
             }
         }
         
         CloseHandle(hDevice);
     }
-    
-    for (int i = 0; ; i++) {
-        sprintf_s(szPhysicalDrive, "\\\\.\\PhysicalDrive%d", i);
-        
-        HANDLE hDevice = CreateFileA(
-            szPhysicalDrive,
-            0,
-            FILE_SHARE_READ | FILE_SHARE_WRITE,
-            NULL,
-            OPEN_EXISTING,
-            0,
-            NULL);
-        
-        if (hDevice == INVALID_HANDLE_VALUE) {
-            if (GetLastError() == ERROR_FILE_NOT_FOUND) {
-                break;
-            }
-            continue;
-        }
 
-        // Check if this is a removable drive
-        STORAGE_PROPERTY_QUERY query;
-        memset(&query, 0, sizeof(query));
-        query.PropertyId = StorageDeviceProperty;
-        query.QueryType = PropertyStandardQuery;
-
-        STORAGE_DEVICE_DESCRIPTOR devd;
-        DWORD bytesReturned = 0;
-        
-        if (DeviceIoControl(
-            hDevice,
-            IOCTL_STORAGE_QUERY_PROPERTY,
-            &query, sizeof(query),
-            &devd, sizeof(devd),
-            &bytesReturned,
-            NULL)) {
-            
-            if (devd.RemovableMedia) {
-                printf("\\\\.\\PhysicalDrive%d - ", i);
-                
-                GET_LENGTH_INFORMATION lengthInfo;
-                DWORD bytesReturnedSize = 0;
-                
-                if (DeviceIoControl(
-                    hDevice,
-                    IOCTL_DISK_GET_LENGTH_INFO,
-                    NULL, 0,
-                    &lengthInfo, sizeof(lengthInfo),
-                    &bytesReturnedSize,
-                    NULL)) {
-                    
-                    ULONGLONG diskSize = lengthInfo.Length.QuadPart;
-                    printf("Size: %.2f GB\n", (double)diskSize / (1024 * 1024 * 1024));
-                } else {
-                    printf("Size: Unknown (error %lu)\n", GetLastError());
-                }
-            }
-        }
-        
-        CloseHandle(hDevice);
+    if (foundDrives == 0) {
+        outstrs << "No removable physical drives found.\n";
+    } else {
+        outstrs << "Total removable drives found: " << foundDrives << "\n";
     }
+    out = outstrs.str();
+    return;
 }
 #endif

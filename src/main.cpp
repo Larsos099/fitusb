@@ -8,9 +8,7 @@ int main(int argc, char* argv[]){
     bool getos = false;
     bool listdev = false;
     bool fl = false;
-    #if defined(_WIN32)
-    WinTool wt{};
-    #endif
+
     s iso = "0"; s device = "0";
     s out{};
     verbose v{};
@@ -73,6 +71,7 @@ int main(int argc, char* argv[]){
     }
     #elif defined(_WIN32)
     if(listdev){
+        WinTool wt{};
         wt.listDevices(out);
         std::cout << out << std::endl;
     }
@@ -88,17 +87,16 @@ int main(int argc, char* argv[]){
     }
     #elif defined(_WIN32)
     if(fl){
+        WinTool wt{};
         std::error_code ec;
         bool isoOK = fs::exists(iso, ec);
         if(ec){
             std::cerr << "File Error (ISO): " << ec.message() << std::endl;
         }
-        else {
-            
+        else { 
             wt.flash(iso, std::stoi(device), v);
-            wt.getOutput(out);
-            std::cout << out << std::endl;
         }
+        return 0;
     }
     #endif
     if(getHelp){
