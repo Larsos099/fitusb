@@ -2,7 +2,7 @@
 
 os getOS(){
     #ifdef _WIN32
-    return WIN32;
+    return MSWIN;
 #elif defined(__linux__)
     return UNIX;
 #elif defined(__APPLE__)

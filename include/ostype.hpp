@@ -2,7 +2,7 @@
 #include "main.hpp"
 enum os {
     UNIX,
-    WIN32,
+    MSWIN,
     MAC,
     ERR
 };
