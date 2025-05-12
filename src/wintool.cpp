@@ -88,7 +88,8 @@ void WinTool::listDevices(s &out){
     int foundDrives = 0;
     
     outstrs << "Listing removable physical drives:\n";
-    outstrs << "--------------------------------\n";
+    outstrs << "Please take the number after the " << DRIVE_PREFIX << " for flashing.\n";
+    outstrs << "----------------------------------------------------------------\n";
 
     for (int i = 0; ; i++) {
         sprintf_s(szPhysicalDrive, "\\\\.\\PhysicalDrive%d", i);

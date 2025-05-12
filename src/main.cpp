@@ -33,12 +33,12 @@ int main(int argc, char* argv[]){
     if(geteuid() != 0 && !getHelp){
         throw std::runtime_error("This program must be run as root. (sudo)\n");
     }
-    if(findInVec(argl, "-ld")){
-        listdev = true;
-    }
     #elif defined(_WIN32)
     // elevatewin32(); (soon to be implemented in util.hpp)
     #endif
+    if(findInVec(argl, "-ld")){
+        listdev = true;
+    }
     if(findInVec(argl, "-v")){
         v = YES;
     }
