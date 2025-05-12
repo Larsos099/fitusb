@@ -93,7 +93,6 @@ void WinTool::listDevices(s &out){
     for (int i = 0; ; i++) {
         sprintf_s(szPhysicalDrive, "\\\\.\\PhysicalDrive%d", i);
         
-        // Try with read-only access first
         HANDLE hDevice = CreateFileA(
             szPhysicalDrive,
             FILE_READ_ATTRIBUTES,
@@ -106,10 +105,9 @@ void WinTool::listDevices(s &out){
         if (hDevice == INVALID_HANDLE_VALUE) {
             DWORD err = GetLastError();
             if (err == ERROR_FILE_NOT_FOUND) {
-                break;  // No more drives
+                break; 
             }
             
-            // Try again with admin-level access if the first attempt failed
             hDevice = CreateFileA(
                 szPhysicalDrive,
                 GENERIC_READ,
@@ -126,7 +124,6 @@ void WinTool::listDevices(s &out){
             }
         }
 
-        // Get basic device properties
         STORAGE_PROPERTY_QUERY query;
         memset(&query, 0, sizeof(query));
         query.PropertyId = StorageDeviceProperty;
@@ -147,7 +144,7 @@ void WinTool::listDevices(s &out){
                 foundDrives++;
                 outstrs << "Drive #" << foundDrives << ": \\\\.\\PhysicalDrive" << i << "\n";
 
-                // Get more detailed information
+
                 STORAGE_HOTPLUG_INFO hotplugInfo;
                 if (DeviceIoControl(
                     hDevice,
@@ -160,10 +157,8 @@ void WinTool::listDevices(s &out){
                     outstrs << "  Hotpluggable: " << (hotplugInfo.MediaHotplug ? "Yes" : "No") << "\n";
                 }
 
-                // Try different methods to get size
                 bool gotSize = false;
-                
-                // Method 1: Standard size query
+
                 GET_LENGTH_INFORMATION lengthInfo;
                 if (DeviceIoControl(
                     hDevice,
@@ -179,7 +174,6 @@ void WinTool::listDevices(s &out){
                     gotSize = true;
                 }
 
-                // Method 2: Alternative size query if first failed
                 if (!gotSize) {
                     DISK_GEOMETRY_EX diskGeometry;
                     if (DeviceIoControl(

@@ -29,3 +29,7 @@ std::pair<bool, int> findInArgs(v<s> &argl, s &val) {
     int p = whereInVec(argl, val);
     return {e, p};
 }
+bool isInt(const std::string& s) {
+    static const std::regex pattern(R"([+-]?\d+)");
+    return std::regex_match(s, pattern);
+}

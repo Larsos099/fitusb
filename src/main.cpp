@@ -70,7 +70,7 @@ int main(int argc, char* argv[]){
         if(fs::exists(argl[i]) && findInStr(argl[i], "/dev/")) device = fs::absolute(argl[i]);
         #elif defined(_WIN32)
         if(fs::exists(argl[i])) { iso = fs::absolute(argl[i]).string(); }
-        if((std::stoi(argl[i]) == 0)) device = argl[i];
+        if(isInt(argl[i])) device = argl[i];
         
         
         #endif
