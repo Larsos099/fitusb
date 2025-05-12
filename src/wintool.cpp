@@ -40,9 +40,9 @@ void WinTool::flash(const s isofile, const int devnum, verbose v) {
     DWORD bytesRead, bytesWritten;
     while (ReadFile(isoHandle, bf.data(), BUFFER_SIZE, &bytesRead, nullptr) && bytesRead > 0) {
         if (!WriteFile(driveHandle, bf.data(), bytesRead, &bytesWritten, nullptr) || bytesWritten != bytesRead) {
+            std::cerr << "write to " << s(DRIVE_PREFIX + std::to_string(devnum)) << " failed. " << std::endl << "WinAPI GetLastError(): \n" << GetLastError();
             CloseHandle(isoHandle);
             CloseHandle(driveHandle);
-            std::cerr << "write to " << s(DRIVE_PREFIX + std::to_string(devnum)) << " failed. " << std::endl << "WinAPI GetLastError(): \n" << GetLastError();
             throw std::errc::io_error;
         }
     }
