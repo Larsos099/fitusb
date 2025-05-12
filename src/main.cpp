@@ -32,9 +32,18 @@ int main(int argc, char* argv[]){
         listdev = true;
     }
     for(int i = 1; i < argc; i++){
+        #if defined(__unix__) || defined(__APPLE__)
         if(fs::exists(argl[i]) && !findInStr(argl[i], "/dev/")) iso = fs::absolute(argl[i]);
         if(fs::exists(argl[i]) && findInStr(argl[i], "/dev/")) device = fs::absolute(argl[i]);
-
+        #elif defined(_WIN32)
+        if(fs::exists(argl[i])  iso = fs::absolute(argl[i]);
+        try {
+            if(argl[i].size() == 1 && (std::stoi(argl[i]) == 0)) device = argl[i];
+        }
+        catch (const std::invalid_argument &ex){
+            std::cout << "Drive Argument Recognition failed. likely std::stoi. " <<  "argl[" << std::to_string(i) << "]" <<std::endl << ex.what() << std::endl;
+        }
+        #endif
     }
     if(iso == "0" || device == "0") throw std::invalid_argument("Please specify Device and ISO-File");
     else if(iso != "0" && device != "0") fl = true;

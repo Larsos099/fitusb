@@ -11,8 +11,9 @@
     #include<Windows.h>
     #include<process.h>
     #define LISTDEV "diskpart /s \"list disk\""
-    #define FLASH_TOOL 
-#elif defined(__linux__)
+    #define DRIVE_PREFIX "\\\.\\PhysicalDrive"
+    // Using Native WinAPI to Flash USB... (i hate this.)
+#elif defined(__unix__)
     #include<cstdio>
     #include<unistd.h> 
     #define LISTDEV "lsblk"
