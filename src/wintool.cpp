@@ -2,7 +2,58 @@
 #include "wintool.hpp"
 
 WinTool::WinTool(){};
+void WinTool::unlock(const int devnum){
+    HANDLE driveHandle;
+    driveHandle = CreateFileA(
+        s(DRIVE_PREFIX + std::to_string(devnum)).c_str(),
+        GENERIC_READ | GENERIC_WRITE,
+        FILE_SHARE_READ | FILE_SHARE_WRITE,
+        nullptr,
+        OPEN_EXISTING,
+        0,
+        nullptr
+    );
+    if(driveHandle == INVALID_HANDLE_VALUE) throw std::errc::io_error;
 
+    DWORD bytesReturned;
+    BOOL result = DeviceIoControl(
+        driveHandle,
+        FSCTL_UNLOCK_VOLUME,
+        NULL,
+        0,
+        NULL,
+        0,
+        &bytesReturned,
+        NULL
+    );
+
+    CloseHandle(driveHandle);
+}
+void WinTool::unmount(const int devnum){
+    HANDLE driveHandle;
+    driveHandle = CreateFileA(
+        s(DRIVE_PREFIX + std::to_string(devnum)).c_str(),
+        GENERIC_READ | GENERIC_WRITE,
+        FILE_SHARE_READ | FILE_SHARE_WRITE,
+        nullptr,
+        OPEN_EXISTING,
+        0,
+        nullptr
+    );
+    if(driveHandle == INVALID_HANDLE_VALUE) throw std::errc::io_error;
+    DWORD bytesReturned;
+    BOOL result = DeviceIoControl(
+        driveHandle,
+        FSCTL_DISMOUNT_VOLUME,
+        NULL,
+        0,
+        NULL,
+        0,
+        &bytesReturned,
+        NULL
+    );
+    CloseHandle(driveHandle);
+}
 void WinTool::flash(const s isofile, const int devnum, verbose v) {
     if((v)) {
     HANDLE isoHandle;

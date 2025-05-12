@@ -8,6 +8,8 @@ public:
     WinTool();
     void flash(const s isofile, const int devnum, verbose v);
     void listDevices(s &out);
+    void unlock(const int devnum);
+    void unmount(const int devnum);
 private:
     s output{};
 };

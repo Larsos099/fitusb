@@ -103,6 +103,8 @@ int main(int argc, char* argv[]){
             std::cerr << "File Error (ISO): " << ec.message() << std::endl;
         }
         else { 
+            wt.unlock(std::stoi(device));
+            wt.unmount(std::stoi(device));
             wt.flash(iso, std::stoi(device), v);
         }
         return 0;
