@@ -19,9 +19,13 @@ int main(int argc, char* argv[]){
     if(findInVec(argl, "-h")){
         getHelp = true;
     }
+    #if defined(__unix__) || defined(__APPLE__)
     if(geteuid() != 0 && !getHelp){
         throw std::runtime_error("This program must be run as root. (sudo)\n");
     }
+    #elif defined(_WIN32)
+    // elevatewin32(); (soon to be implemented in util.hpp)
+    #endif
     if(findInVec(argl, "-v")){
         v = YES;
     }
@@ -36,7 +40,7 @@ int main(int argc, char* argv[]){
         if(fs::exists(argl[i]) && !findInStr(argl[i], "/dev/")) iso = fs::absolute(argl[i]);
         if(fs::exists(argl[i]) && findInStr(argl[i], "/dev/")) device = fs::absolute(argl[i]);
         #elif defined(_WIN32)
-        if(fs::exists(argl[i])  iso = fs::absolute(argl[i]);
+        if(fs::exists(argl[i])) { iso = fs::absolute(argl[i]); }
         try {
             if(argl[i].size() == 1 && (std::stoi(argl[i]) == 0)) device = argl[i];
         }
@@ -61,6 +65,7 @@ int main(int argc, char* argv[]){
     if(listdev){
         proc.Exec(osys, v, LISTDEV);
     }
+    #if defined(__unix__) || defined(__APPLE__)
     if(fl){
         if(!fs::exists(iso) || !fs::exists(device)) throw std::errc::no_such_file_or_directory;
         std::ostringstream ss;
@@ -68,6 +73,9 @@ int main(int argc, char* argv[]){
         s flash = ss.str();
         proc.Exec(osys, v, flash);
     }
+    #elif defined(_WIN32)
+    // Soon to be implemented
+    #endif
     if(getHelp){
         std::cout << "usage:\n"
                   << "1. sudo fitusb [-h -v -gos -ld]\n"
