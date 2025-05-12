@@ -11,7 +11,9 @@ int main(int argc, char* argv[]){
     bool getos = false;
     bool listdev = false;
     bool fl = false;
-    
+    bool getHelp = false;
+    bool no_others = false;
+    os osys = getOS();
     s iso = "0"; s device = "0";
     s out{};
     verbose v{};
@@ -25,10 +27,14 @@ int main(int argc, char* argv[]){
     if(findInVec(argl, "-h")){
         os z = getOS();
         helpPrompt(z);
+        getHelp = true;
     }
     #if defined(__unix__) || defined(__APPLE__)
     if(geteuid() != 0 && !getHelp){
         throw std::runtime_error("This program must be run as root. (sudo)\n");
+    }
+    if(findInVec(argl, "-ld")){
+        listdev = true;
     }
     #elif defined(_WIN32)
     // elevatewin32(); (soon to be implemented in util.hpp)
@@ -39,9 +45,10 @@ int main(int argc, char* argv[]){
     if(findInVec(argl, "-gos")){
         getos = true;
     }
-    if(findInVec(argl, "-ld")){
-        listdev = true;
+    if(!getos && !listdev) {
+        no_others = true;
     }
+    Process proc{};
     if(getos){
         os ro = getOS();
         switch(ro){
@@ -50,10 +57,13 @@ int main(int argc, char* argv[]){
             case 2: {std::cout << "MACOS" << std::endl;} break;
             case 3: {std::cout << "UNSUPPORTED" << std::endl;} break;
         };
+        exit(0);
     }
-    #if defined(__unix__ )|| (__APPLE__)
+    #if defined(__unix__)|| (__APPLE__)
     if(listdev){
         proc.Exec(osys, v, LISTDEV);
+        std::cout << proc.output << std::endl;
+        exit(0);
     }
     #elif defined(_WIN32)
     if(listdev){
@@ -63,7 +73,6 @@ int main(int argc, char* argv[]){
         exit(0);
     }
     #endif
-    Process proc{};
     for(int i = 1; i < argc; i++){
         #if defined(__unix__) || defined(__APPLE__)
         if(fs::exists(argl[i]) && !findInStr(argl[i], "/dev/")) iso = fs::absolute(argl[i]);
@@ -75,11 +84,8 @@ int main(int argc, char* argv[]){
         
         #endif
     }
-    if(iso == "0" || device == "0") throw std::invalid_argument("Please specify Device and ISO-File");
+    if(iso == "0" || device == "0" && no_others) throw std::invalid_argument("Please specify Device and ISO-File");
     else if(iso != "0" && device != "0") fl = true;
-    os osys = getOS();
-    
-
     #if defined(__unix__) || defined(__APPLE__)
     if(fl){
         if(!fs::exists(iso) || !fs::exists(device)) throw std::errc::no_such_file_or_directory;
