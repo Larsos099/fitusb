@@ -23,6 +23,24 @@
         "cacheVariables": {
           "CMAKE_BUILD_TYPE": "Release"
         }
+      },
+      {
+        "name": "unix-ninja",
+        "hidden": false,
+        "generator": "Ninja",
+        "binaryDir": "${sourceDir}/build/",
+        "cacheVariables": {
+          "CMAKE_BUILD_TYPE": "Release"
+        }
+      },
+      {
+        "name": "unix",
+        "hidden": false,
+        "generator": "Makefiles",
+        "binaryDir": "${sourceDir}/build/",
+        "cacheVariables": {
+          "CMAKE_BUILD_TYPE": "Release"
+        }
       }
     ]
   }
