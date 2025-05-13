@@ -110,8 +110,8 @@ int main(int argc, char* argv[]){
             wt.unmount(std::stoi(device));
             wt.flash(iso, std::stoi(device), v);
             std::cin.get();
+            exit(0);
         }
-        return 0;
     }
     #endif
     return 0;
