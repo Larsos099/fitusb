@@ -1,0 +1,29 @@
+{
+    "version": 3,
+    "cmakeMinimumRequired": {
+      "major": 3,
+      "minor": 20,
+      "patch": 0
+    },
+    "configurePresets": [
+      {
+        "name": "win32",
+        "hidden": false,
+        "generator": "MinGW Makefiles",
+        "binaryDir": "${sourceDir}/build/",
+        "cacheVariables": {
+          "CMAKE_BUILD_TYPE": "Release"
+        }
+      },
+      {
+        "name": "win32-ninja",
+        "hidden": false,
+        "generator": "Ninja",
+        "binaryDir": "${sourceDir}/build/",
+        "cacheVariables": {
+          "CMAKE_BUILD_TYPE": "Release"
+        }
+      }
+    ]
+  }
+  

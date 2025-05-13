@@ -17,6 +17,9 @@ int main(int argc, char* argv[]){
     s iso = "0"; s device = "0";
     s out{};
     verbose v{};
+    #if defined(_WIN32)
+    WinTool wt{};
+    #endif
     for(int i = 0; i < argc; i++){
         argl.push_back(std::string(argv[i])); // because C-Strings are disgusting
     }
@@ -34,7 +37,7 @@ int main(int argc, char* argv[]){
         throw std::runtime_error("This program must be run as root. (sudo)\n");
     }
     #elif defined(_WIN32)
-    // elevatewin32(); (soon to be implemented in util.hpp)
+    /wt.elevate();
     #endif
     if(findInVec(argl, "-ld")){
         listdev = true;
@@ -67,7 +70,6 @@ int main(int argc, char* argv[]){
     }
     #elif defined(_WIN32)
     if(listdev){
-        WinTool wt{};
         wt.listDevices(out);
         std::cout << out << std::endl;
         exit(0);
@@ -96,7 +98,6 @@ int main(int argc, char* argv[]){
     }
     #elif defined(_WIN32)
     if(fl){
-        WinTool wt{};
         std::error_code ec;
         bool isoOK = fs::exists(iso, ec);
         if(ec){

@@ -29,6 +29,9 @@ void WinTool::unlock(const int devnum){
 
     CloseHandle(driveHandle);
 }
+bool WinTool::elevate(){
+    // Trigger UAC
+}
 void WinTool::unmount(const int devnum){
     HANDLE driveHandle;
     driveHandle = CreateFileA(

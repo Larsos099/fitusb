@@ -6,6 +6,7 @@
 class WinTool {
 public:
     WinTool();
+    bool elevate();
     void flash(const s isofile, const int devnum, verbose v);
     void listDevices(s &out);
     void unlock(const int devnum);
