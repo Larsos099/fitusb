@@ -92,7 +92,7 @@ int main(int argc, char* argv[]){
     if(fl){
         if(!fs::exists(iso) || !fs::exists(device)) throw std::errc::no_such_file_or_directory;
         std::ostringstream ss;
-        ss << FLASH_TOOL << " if=" << iso << " of=" << device << " bs=1M && sync";
+        ss << FLASH_TOOL << " status=progress"<< " if=" << iso << " of=" << device << " bs=1M && sync >&1";
         s flash = ss.str();
         proc.Exec(osys, v, flash);
     }

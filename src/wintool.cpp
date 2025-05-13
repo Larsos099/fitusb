@@ -2,6 +2,18 @@
 #include "wintool.hpp"
 
 WinTool::WinTool(){};
+void WinTool::getSize(const s isofile){
+    HANDLE isoHandle;
+    isoHandle = CreateFileA(
+        isofile.c_str(),
+        GENERIC_READ,
+            FILE_SHARE_READ,
+            nullptr,
+            OPEN_EXISTING,
+            FILE_ATTRIBUTE_NORMAL,
+            nullptr
+    );
+}
 void WinTool::unlock(const int devnum){
     HANDLE driveHandle;
     driveHandle = CreateFileA(
@@ -99,6 +111,9 @@ void WinTool::flash(const s isofile, const int devnum, verbose v) {
             CloseHandle(isoHandle);
             CloseHandle(driveHandle);
             throw std::errc::io_error;
+        }
+        else {
+            std::cout << isofile << ""
         }
     }
 }

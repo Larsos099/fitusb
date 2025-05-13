@@ -11,6 +11,7 @@ public:
     void listDevices(s &out);
     void unlock(const int devnum);
     void unmount(const int devnum);
+    void getSize(const s isofile);
 private:
     s output{};
 };

@@ -15,13 +15,12 @@ void Process::Exec(os operatingSystemType, verbose v, s cmd) {
         while((c = fgetc(pipe)) != EOF){
             std::cout << "Reading command output..." << std::endl;
             if(feof(pipe)) break;
-            cmdOut << c;
+            std::cout << c;
         }  
         std::cout << "Finished reading command output" << std::endl;
         if((pclose(pipe))){
             throw std::system_error();
         }
-        output =cmdOut.str();
         return;
     }
     if(operatingSystemType == UNIX && v == NO){
