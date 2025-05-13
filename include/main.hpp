@@ -9,9 +9,12 @@
 #include "verbose.hpp"
 #ifdef _WIN32
     #include<Windows.h>
-    #include <setupapi.h>
-    #include <winioctl.h>
-    #include <regex>
+    #include<setupapi.h>
+    #include<winioctl.h>
+    #include<fileapi.h>
+    #include<ShlObj.h>
+    #include<regex>
+    #include<shellapi.h>
     #define DRIVE_PREFIX "\\\\.\\PhysicalDrive"
     // Using Native WinAPI to Flash USB... (i hate this.)
     constexpr DWORD BUFFER_SIZE = 1024 * 1024;

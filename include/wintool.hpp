@@ -6,12 +6,12 @@
 class WinTool {
 public:
     WinTool();
-    bool elevate();
+    void elevate(int argc, char* argv[]);
     void flash(const s isofile, const int devnum, verbose v);
     void listDevices(s &out);
     void unlock(const int devnum);
     void unmount(const int devnum);
-    void getSize(const s isofile);
+    double getSize(const s isofile);
 private:
     s output{};
 };

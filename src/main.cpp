@@ -37,7 +37,7 @@ int main(int argc, char* argv[]){
         throw std::runtime_error("This program must be run as root. (sudo)\n");
     }
     #elif defined(_WIN32)
-    wt.elevate();
+    if(IsUserAnAdmin() == FALSE) wt.elevate(argc, argv);
     #endif
     if(findInVec(argl, "-ld")){
         listdev = true;
@@ -60,6 +60,7 @@ int main(int argc, char* argv[]){
             case 2: {std::cout << "MACOS" << std::endl;} break;
             case 3: {std::cout << "UNSUPPORTED" << std::endl;} break;
         };
+        std::cin.get();
         exit(0);
     }
     #if defined(__unix__)|| (__APPLE__)
@@ -72,6 +73,7 @@ int main(int argc, char* argv[]){
     if(listdev){
         wt.listDevices(out);
         std::cout << out << std::endl;
+        std::cin.get();
         exit(0);
     }
     #endif
@@ -107,6 +109,7 @@ int main(int argc, char* argv[]){
             wt.unlock(std::stoi(device));
             wt.unmount(std::stoi(device));
             wt.flash(iso, std::stoi(device), v);
+            std::cin.get();
         }
         return 0;
     }

@@ -2,7 +2,14 @@
 #include "wintool.hpp"
 
 WinTool::WinTool(){};
-void WinTool::getSize(const s isofile){
+std::string GetCommandLineArgs(int argc, char* argv[]) {
+    std::ostringstream oss;
+    for (int i = 1; i < argc; ++i) {
+        oss << '\"' << argv[i] << "\" ";
+    }
+    return oss.str();
+}
+double WinTool::getSize(const s isofile){
     HANDLE isoHandle;
     isoHandle = CreateFileA(
         isofile.c_str(),
@@ -13,6 +20,11 @@ void WinTool::getSize(const s isofile){
             FILE_ATTRIBUTE_NORMAL,
             nullptr
     );
+    DWORD size = GetFileSize(
+        isoHandle,
+        nullptr
+    );
+    return static_cast<double>(size*1048576);
 }
 void WinTool::unlock(const int devnum){
     HANDLE driveHandle;
@@ -41,9 +53,24 @@ void WinTool::unlock(const int devnum){
 
     CloseHandle(driveHandle);
 }
-bool WinTool::elevate(){
-    // Trigger UAC
-    return true;
+void WinTool::elevate(int argc, char* argv[]){
+    char exePath[MAX_PATH];
+    GetModuleFileNameA(NULL, exePath, MAX_PATH);
+    std::string params = GetCommandLineArgs(argc, argv);
+    SHELLEXECUTEINFOA sei = { sizeof(sei) };
+    sei.lpVerb = "runas";
+    sei.lpFile = exePath; 
+    sei.lpParameters = params.c_str();
+    sei.nShow = SW_SHOWNORMAL;
+    if (!ShellExecuteExA(&sei)) {
+        DWORD err = GetLastError();
+        if (err == ERROR_CANCELLED) {
+            exit(827);
+        } else {
+            exit(828);
+        }
+    return;
+}
 }
 void WinTool::unmount(const int devnum){
     HANDLE driveHandle;
@@ -113,7 +140,7 @@ void WinTool::flash(const s isofile, const int devnum, verbose v) {
             throw std::errc::io_error;
         }
         else {
-            std::cout << isofile << ""
+            std::cout << "Wrote: " << static_cast<double>(bytesWritten*1048576) << " out of total: " << getSize(isofile);
         }
     }
 }
