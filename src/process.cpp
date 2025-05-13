@@ -9,6 +9,7 @@ void Process::Exec(os operatingSystemType, verbose v, s cmd) {
         if(!pipe){
             throw std::system_error();
         }
+        
         std::ostringstream cmdOut;
         char c;
         while((c = fgetc(pipe)) != EOF){

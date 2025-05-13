@@ -24,7 +24,7 @@
     #include <unistd.h>
     #include <cstdlib>
     #include <cstdio>   
-    #define LISTDEV "lsblk"
+    #define LISTDEV "diskutil list"
     #define FLASH_TOOL "dd"
 #else
     #error "unsupported os."

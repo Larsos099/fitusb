@@ -8,8 +8,13 @@ fitusb is very easy to use with its simple CLI Syntax
 you just build it from source (using CMake) or download it from Sources like the AUR
 ## 4. How do I use _fitusb_?
 you use fitusb in the terminal of your choice like this:
+Unix-Style:
 ```sh
 fitusb <ISO-Image-path> <device> (-v)
+```
+Windows-Style:
+```sh
+fitusb [-v -gos -ld] <ISO-Image-Path> <Device-Number>
 ```
 to list the devices, you use the following argument:
 ```sh
@@ -19,11 +24,13 @@ to get the OS detected by fitusb you use:
 ```sh
 fitusb -gos
 ```
+the order of the Arguments does not matter
 # 5. Building _fitusb_
 ## 5.1 Requirements
 - Some C++ Compiler with C++17 support
 - CMake 3.16
-- _**(UNIX SYSTEMS ONLY) lsblk**_
+- _**(LINUX SYSTEMS ONLY) lsblk**_
+- GCC/G++ v15.1
 ## 5.2 How to build _fitusb_
 you go into the fitusb directory, where you cloned it into.
 

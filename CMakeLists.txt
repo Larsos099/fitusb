@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.16)
 project(fitusb) # Flash (ISO-)Image to USB
+if(WIN32)
 set(CMAKE_MAKE_PROGRAM "mingw32-make")
+endif()
 set(CMAKE_CXX_STANDARD 17) # C++ 17
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXE_LINKER_FLAGS "--static")
