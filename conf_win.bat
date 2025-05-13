@@ -1,21 +1,28 @@
 @echo off
 
-set "minGW-make=mingw-make32.exe"
+set minGW-make=mingw32-make.exe
 set "ninja=ninja.exe"
 set "tool=0"
-if exist "%ninja%"(
-    echo "Found Ninja"
+
+echo Checking for Ninja...
+where.exe %ninja% >nul 2>&1
+if %errorlevel% == 0 (
+    echo Found Ninja
     set "tool=1"
     cmake --preset win32-ninja
+    exit
 )
-if exist "%minGW-make%" (
-    echo "Found mingw-make32.exe"
+
+echo Checking for MinGW Make...
+where.exe %minGW-make% >nul 2>&1
+if %errorlevel% == 0 (
+    echo Found mingw32-make.exe
     set "tool=1"
     cmake --preset win32
+    exit
 )
+
 if "%tool%" == "0" (
-    echo "Could not Find either Ninja, nor %minGW-make%\n Please Install one of them.\n (Preffered Ninja)"
-)
-else (
-    
+    echo Could not find either Ninja, nor %minGW-make%
+    echo Please install one of them. (Preferred: Ninja)
 )

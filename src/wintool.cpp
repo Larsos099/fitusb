@@ -31,6 +31,7 @@ void WinTool::unlock(const int devnum){
 }
 bool WinTool::elevate(){
     // Trigger UAC
+    return true;
 }
 void WinTool::unmount(const int devnum){
     HANDLE driveHandle;

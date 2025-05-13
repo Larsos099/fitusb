@@ -37,7 +37,7 @@ int main(int argc, char* argv[]){
         throw std::runtime_error("This program must be run as root. (sudo)\n");
     }
     #elif defined(_WIN32)
-    /wt.elevate();
+    wt.elevate();
     #endif
     if(findInVec(argl, "-ld")){
         listdev = true;

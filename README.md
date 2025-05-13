@@ -30,29 +30,25 @@ the order of the Arguments does not matter
 - Some C++ Compiler with C++17 support
 - CMake 3.20
 - _**(LINUX SYSTEMS ONLY) lsblk**_
-- GCC/G++ v15.1
+- GCC/G++ v15.1 _(on Windows MinGW)_
 - _(Optional): Ninja_
 ## 5.2 How to build _fitusb_
 you go into the fitusb directory, where you cloned it into.
 
-Now you type into your terminal of choice:
+Now you type into your terminal of your choice: (Linux or MacOS)
 ```sh
-cmake .
+./conf.sh
+```
+Now you type into your terminal of choice: (Windows)
+```sh
+.\conf_win.bat
 ```
 then you type in (On Linux or MacOS)
 ```sh
-cmake --build ./build
+./build.sh
 ```
-or if you use windows, you ignore those 2 steps before and do
+or if you use windows, do this:
 ```sh
-cmake --preset <preset>
-```
-your options are:
-- win32-ninja: If you have Ninja Installed on your System
-- win32: If you have MinGW on your System
-
-then, you also enter:
-```sh
-cmake --build .\build\
+.\build_win.bat
 ```
 and there you go, you should see an fitusb executable in the build folder.
