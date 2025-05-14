@@ -24,7 +24,7 @@ double WinTool::getSize(const s isofile){
         isoHandle,
         nullptr
     );
-    return static_cast<double>(size*1048576);
+    return static_cast<double>(size/1048576);
 }
 void WinTool::unlock(const int devnum){
     HANDLE driveHandle;
@@ -134,6 +134,7 @@ void WinTool::flash(const s isofile, const int devnum, verbose v) {
         std::cerr << ex.what() << std::endl << "fitusb failed at WinTool flash, at declaring driveHandle" << std::endl << "WinAPI GetLastError() output: \n" << GetLastError() << std::endl;
 
     }
+    DWORD totalWritten = 0;
     std::vector<BYTE> bf(BUFFER_SIZE);
     DWORD bytesRead, bytesWritten;
     while (ReadFile(isoHandle, bf.data(), BUFFER_SIZE, &bytesRead, nullptr) && bytesRead > 0) {
@@ -144,7 +145,8 @@ void WinTool::flash(const s isofile, const int devnum, verbose v) {
             throw std::errc::io_error;
         }
         else {
-            std::cout << "Wrote: " << static_cast<double>(bytesWritten*1048576) << " out of total: " << getSize(isofile);
+            totalWritten += bytesWritten;
+            std::cout << "Wrote: " << static_cast<double>(totalWritten/1048576) << " out of total: " << getSize(isofile) << std::endl;
         }
     }
 }

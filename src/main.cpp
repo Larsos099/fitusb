@@ -74,7 +74,6 @@ int main(int argc, char* argv[]){
         wt.listDevices(out);
         std::cout << out << std::endl;
         std::cin.get();
-        exit(0);
     }
     #endif
     for(int i = 1; i < argc; i++){
@@ -110,7 +109,6 @@ int main(int argc, char* argv[]){
             wt.unmount(std::stoi(device));
             wt.flash(iso, std::stoi(device), v);
             std::cin.get();
-            exit(0);
         }
     }
     #endif
