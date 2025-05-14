@@ -69,7 +69,11 @@ void WinTool::elevate(int argc, char* argv[]){
         } else {
             exit(828);
         }
+
     return;
+}
+else {
+    exit(0);
 }
 }
 void WinTool::unmount(const int devnum){
