@@ -59,8 +59,9 @@ Total removable drives found: 1
 In this Example, you use drive number 1.
 
 Example of -gos on Windows:
-```
+```sh
 .\fitusb -gos
+#Output:
 WINDOWS
 ```
 You specify 
