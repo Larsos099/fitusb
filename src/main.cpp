@@ -20,6 +20,7 @@ int main(int argc, char* argv[]){
     #if defined(_WIN32)
     WinTool wt{};
     #endif
+    
     for(int i = 0; i < argc; i++){
         argl.push_back(std::string(argv[i])); // because C-Strings are disgusting
     }
@@ -51,8 +52,11 @@ int main(int argc, char* argv[]){
     if(!getos && !listdev) {
         no_others = true;
     }
+    #if defined(__linux__) || defined(__APPLE__)
     Process proc{};
+    #endif
     if(getos){
+        std::cout << "fitusb v0.1 | Lars Lindner 2025" << std::endl;
         os ro = getOS();
         switch(ro){
             case 0: {std::cout << "UNIX/UNIX-LIKE" << std::endl;} break;
@@ -65,12 +69,14 @@ int main(int argc, char* argv[]){
     }
     #if defined(__unix__)|| (__APPLE__)
     if(listdev){
+        std::cout << "fitusb v0.1 | Lars Lindner 2025" << std::endl;
         proc.Exec(osys, v, LISTDEV);
         std::cout << proc.output << std::endl;
         exit(0);
     }
     #elif defined(_WIN32)
     if(listdev){
+        std::cout << "fitusb v0.1 | Lars Lindner 2025" << std::endl;
         wt.listDevices(out);
         std::cout << out << std::endl;
         std::cin.get();
@@ -91,6 +97,7 @@ int main(int argc, char* argv[]){
     else if(iso != "0" && device != "0") fl = true;
     #if defined(__unix__) || defined(__APPLE__)
     if(fl){
+        std::cout << "fitusb v0.1 | Lars Lindner 2025" << std::endl;
         if(!fs::exists(iso) || !fs::exists(device)) throw std::errc::no_such_file_or_directory;
         std::ostringstream ss;
         ss << FLASH_TOOL << " status=progress"<< " if=" << iso << " of=" << device << " bs=1M && sync >&1";
@@ -99,6 +106,7 @@ int main(int argc, char* argv[]){
     }
     #elif defined(_WIN32)
     if(fl){
+        std::cout << "fitusb v0.1 | Lars Lindner 2025" << std::endl;
         std::error_code ec;
         bool isoOK = fs::exists(iso, ec);
         if(ec){

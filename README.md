@@ -1,5 +1,7 @@
 # fitusb (Flash (ISO-)Image to USB)
 
+Fitusb is a simple, crossplatfrom, FOSS and lightweight CLI Tool for flashing ISO-Images to External Drives
+
 ## Table of Contents
 - ### [1. fitusb requirements](#fitusb-build-requirements)
 - ### [2. Why fitusb?](#why-fitusb)
@@ -15,9 +17,9 @@ To build fitusb and use it, you need the following:
 
 - _(optional, but recommended) Ninja_
 
-- (lsblk on Linux-Systems)
+- _(lsblk on Linux-Systems)_
 ## Why _fitusb_?
-Fitusb is a simple, leightweight ISO-Flasher.
+Fitusb is a simple, lightweight ISO-Flasher.
 
 It's completely written in C++, and practically native
 
@@ -31,8 +33,9 @@ Use fitusb, flashing a bootable USB with only 2 CLI Arguments.
 
 With just a few arguments.
 ```sh
-fitusb [-gos] [-ld] [-v] <ISO-Image-path> <Device-Path/Device-Number>
+./fitusb <ISO_PATH> <DEVICE_PATH/DEVICE_NUMBER> [OPTIONAL_FLAGS]
 # On Windows, you use Device numbers to select the drive, on Linux/MacOS device Paths.
+# The order of the Arguments does not matter.
 ```
 
 Example ISO-Flashing Syntax
@@ -56,12 +59,12 @@ Drive #1: \\.\PhysicalDrive2
 
 Total removable drives found: 1
 ```
-In this Example, you use drive number 1.
+In this Example, you use drive number 2.
 
 Example of -gos on Windows:
 ```sh
 .\fitusb -gos
-#Output:
+# Output:
 WINDOWS
 ```
 You specify 
