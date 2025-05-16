@@ -1,58 +1,87 @@
 # fitusb (Flash (ISO-)Image to USB)
 
-## 1. What is _fitusb_?
-fitusb is a custom Multi-Platform Image to USB flash tool coded in C++
-## 2. Why _fitusb_?
-fitusb is very easy to use with its simple CLI Syntax
+## Table of Contents
+- ### [1. fitusb requirements](#fitusb-build-requirements)
+- ### [2. Why fitusb?](#why-fitusb)
+- ### [3. How do I use fitusb?](#how-do-i-use-fitusb)
+- ### [4. How do I get fitusb?](#how-do-i-get-fitusb)
+    - #### [Windows](#for-windows)
+    - #### [Linux/MacOS](#for-linuxmacos)
+## fitusb build requirements
+To build fitusb and use it, you need the following:
+- GCC/G++ >= 15.1 (On Windows MinGW)
 
-It also has basically no dependencies, its 100% Coded in Standard C++ Library, Standard C Library and WinAPI.
+- CMake >= 3.20
 
-So it's basically native to everything that can run C++ and has lsblk installed.
-## 3. How do I get _fitusb_?
-you just build it from source (using CMake)
-## 4. How do I use _fitusb_?
-you use fitusb in the terminal of your choice like this:
+- _(optional, but recommended) Ninja_
 
-Unix-Style:
-```sh
-fitusb <ISO-Image-path> <device> (-v)
-```
-Windows-Style:
-```sh
-fitusb [-v -gos -ld] <ISO-Image-Path> <Device-Number>
-```
-to list the devices, you use the following argument:
-```sh
-fitusb -ld
-```
-to get the OS detected by fitusb you use:
-```sh
-fitusb -gos
-```
-the order of the Arguments does not matter
-# 5. Building _fitusb_
-## 5.1 Requirements
-- GCC/G++ v15.1 _(on Windows MinGW)_
-- CMake 3.20
-- _**(LINUX SYSTEMS ONLY) lsblk**_
-- _(Optional, but Recommended): Ninja_
-## 5.2 How to build _fitusb_
-you go into the fitusb directory, where you cloned it into.
+- (lsblk on Linux-Systems)
+## Why _fitusb_?
+Fitusb is a simple, leightweight ISO-Flasher.
 
-Now you type into your terminal of your choice: (Linux or MacOS)
+It's completely written in C++, and practically native
+
+It only needs one dependency on Linux Systems, and that is lsblk.
+
+Otherwise it's completely written in C++ Standard Library and Native WinAPI for Windows.
+
+Use fitusb, flashing a bootable USB with only 2 CLI Arguments.
+
+## How do I use _fitusb_?
+
+With just a few arguments.
 ```sh
-./conf.sh
+fitusb [-gos] [-ld] [-v] <ISO-Image-path> <Device-Path/Device-Number>
+# On Windows, you use Device numbers to select the drive, on Linux/MacOS device Paths.
 ```
-Now you type into your terminal of choice: (Windows)
+Example output of -ld on Windows:
+```
+./fitusb -ld
+Listing removable physical drives:
+Please take the number after the \\.\PhysicalDrive for flashing.
+----------------------------------------------------------------
+Drive #1: \\.\PhysicalDrive2
+  Removable: Yes
+  Hotpluggable: No
+  Size: 58.24 GB (62537072640 bytes)
+
+Total removable drives found: 1
+```
+In this Example, you use drive number 1.
+
+Example of -gos on Windows:
+```
+./fitusb -gos
+WINDOWS
+```
+You specify 
+```
+-v
+```
+To get more detailed, verbose output.
+
+## How do I get fitusb?
+
+To get fitusb, you need to clone its Git-Repo
+
 ```sh
+git clone https://github.com/Larsos099/fitusb
+```
+
+Now you just have to configure it and build it:
+
+### For Windows:
+```ps1
 .\conf_win.bat
-```
-then you type in (On Linux or MacOS)
-```sh
-./build.sh
-```
-or if you use windows, do this:
-```sh
+# After this is finished, you run
 .\build_win.bat
 ```
-and there you go, you should see an fitusb executable in the build folder.
+
+### For Linux/MacOS:
+
+```sh
+./conf.sh
+# After this is finished, you run
+./build.sh
+```
+## And thats it, there should be a executable of your System-Type in the build directory named fitusb.
