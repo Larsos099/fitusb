@@ -34,9 +34,18 @@ With just a few arguments.
 fitusb [-gos] [-ld] [-v] <ISO-Image-path> <Device-Path/Device-Number>
 # On Windows, you use Device numbers to select the drive, on Linux/MacOS device Paths.
 ```
+
+Example ISO-Flashing Syntax
+```sh
+# For Windows
+.\fitusb archlinux-x86_64.iso 3 -v
+# For Linux/MacOS
+./fitusb ~/Downloads/archlinux-x86_64.iso /dev/sdb
+```
+
 Example output of -ld on Windows:
 ```
-./fitusb -ld
+.\fitusb -ld
 Listing removable physical drives:
 Please take the number after the \\.\PhysicalDrive for flashing.
 ----------------------------------------------------------------
@@ -51,7 +60,7 @@ In this Example, you use drive number 1.
 
 Example of -gos on Windows:
 ```
-./fitusb -gos
+.\fitusb -gos
 WINDOWS
 ```
 You specify 
