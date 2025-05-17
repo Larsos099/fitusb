@@ -63,18 +63,10 @@ void WinTool::elevate(int argc, char* argv[]){
     sei.lpParameters = params.c_str();
     sei.nShow = SW_SHOWNORMAL;
     if (!ShellExecuteExA(&sei)) {
-        DWORD err = GetLastError();
-        if (err == ERROR_CANCELLED) {
-            exit(827);
-        } else {
-            exit(828);
-        }
-
-    return;
+    DWORD err = GetLastError();
+    exit(err == ERROR_CANCELLED ? 827 : 828);
 }
-else {
-    exit(0);
-}
+exit(0);
 }
 void WinTool::unmount(const int devnum){
     HANDLE driveHandle;
