@@ -96,7 +96,6 @@ void WinTool::unmount(const int devnum){
 void WinTool::flash(const s isofile, const int devnum, verbose v) {
     if((v)) {
     HANDLE isoHandle;
-    try {
         isoHandle = CreateFileA(
             isofile.c_str(),
             GENERIC_READ,
@@ -106,12 +105,13 @@ void WinTool::flash(const s isofile, const int devnum, verbose v) {
             FILE_ATTRIBUTE_NORMAL,
             nullptr
         );
-    }
-    catch (std::exception &ex) {
-        std::cerr << ex.what() << std::endl << "fitusb failed at WinTool Flash, at declaring isoHandle.\n" << "WinAPI GetLastError() output: \n" <<GetLastError() << std::endl;
-    }
+    
+    if (isoHandle == INVALID_HANDLE_VALUE) {
+    std::cerr << "Failed to open ISO file: " << isofile
+              << "\nWinAPI Error Code: " << GetLastError() << std::endl;
+    throw std::runtime_error("CreateFileA failed on ISO file.");
+}
     HANDLE driveHandle;
-    try {
         driveHandle = CreateFileA(
             s(DRIVE_PREFIX + std::to_string(devnum)).c_str(),
             GENERIC_WRITE,
@@ -121,11 +121,12 @@ void WinTool::flash(const s isofile, const int devnum, verbose v) {
             0,
             nullptr
         );
-    }
-    catch (std::exception &ex) {
-        std::cerr << ex.what() << std::endl << "fitusb failed at WinTool flash, at declaring driveHandle" << std::endl << "WinAPI GetLastError() output: \n" << GetLastError() << std::endl;
-
-    }
+    
+    if (driveHandle == INVALID_HANDLE_VALUE) {
+    std::cerr << "Failed to open ISO file: " << isofile
+              << "\nWinAPI Error Code: " << GetLastError() << std::endl;
+    throw std::runtime_error("CreateFileA failed on ISO file.");
+}
     DWORD totalWritten = 0;
     std::vector<BYTE> bf(BUFFER_SIZE);
     DWORD bytesRead, bytesWritten;
