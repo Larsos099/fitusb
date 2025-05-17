@@ -33,21 +33,21 @@ int main(int argc, char* argv[]){
         helpPrompt(z);
         getHelp = true;
     }
+    if(findInVec(argl, "-gos")){
+        getos = true;
+    }
     #if defined(__unix__) || defined(__APPLE__)
-    if(geteuid() != 0 && !getHelp){
+    if(geteuid() != 0 && !getHelp && !getos){
         throw std::runtime_error("This program must be run as root. (sudo)\n");
     }
     #elif defined(_WIN32)
-    if(IsUserAnAdmin() == FALSE) wt.elevate(argc, argv);
+    if(IsUserAnAdmin() == FALSE && !getos) wt.elevate(argc, argv);
     #endif
     if(findInVec(argl, "-ld")){
         listdev = true;
     }
     if(findInVec(argl, "-v")){
         v = YES;
-    }
-    if(findInVec(argl, "-gos")){
-        getos = true;
     }
     if(!getos && !listdev) {
         no_others = true;
@@ -64,7 +64,6 @@ int main(int argc, char* argv[]){
             case 2: {std::cout << "MACOS" << std::endl;} break;
             case 3: {std::cout << "UNSUPPORTED" << std::endl;} break;
         };
-        std::cin.get();
         exit(0);
     }
     #if defined(__unix__)|| (__APPLE__)

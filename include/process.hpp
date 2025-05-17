@@ -4,7 +4,7 @@
 class Process {
 public:
     s output{};
-    int returnCode;
+    int returnCode = 0;
     Process();
     void Exec(os operatingSystemType, verbose v, s cmd);
     
