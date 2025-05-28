@@ -22,7 +22,7 @@ int main(int argc, char* argv[]){
     #endif
     
     for(int i = 0; i < argc; i++){
-        argl.push_back(std::string(argv[i])); // because C-Strings are disgusting
+        argl.emplace_back(argv[i]); // because C-Strings are disgusting
     }
     if(argc == 1){
         throw std::runtime_error("This program must be used with arguments. Run with -h to list options.\n");
