@@ -2,3 +2,5 @@ build/
 build/**
 .vscode/
 .vscode/** 
+.idea/
+.idea/** */
